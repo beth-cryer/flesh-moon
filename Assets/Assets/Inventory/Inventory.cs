@@ -1,16 +1,8 @@
 using NaughtyAttributes;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-
-
-[Serializable]
-public class Item
-{
-	public Sprite m_sprite;
-}
 
 public class Inventory : MonoBehaviour
 {
