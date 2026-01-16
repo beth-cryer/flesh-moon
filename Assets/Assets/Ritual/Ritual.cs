@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class Ritual: MonoBehaviour
 {
+	public static Ritual m_instance;
+
 	[SerializeField] private Camera m_characterCamera;
 	[SerializeField] private Transform m_characterModelOrigin;
 
@@ -90,5 +92,11 @@ public class Ritual: MonoBehaviour
 		Debug.Log("click function finishd");
 	}
 
-
+	private void Awake()
+	{
+		if (m_instance == null)
+			m_instance = this;
+		else
+			Destroy(this);
+	}
 }

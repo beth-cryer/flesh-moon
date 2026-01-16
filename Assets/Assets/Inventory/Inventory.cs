@@ -19,6 +19,25 @@ public class Inventory : MonoBehaviour
 	[SerializeField] private Transform m_gridParent;
 	[SerializeField] private GameObject m_itemSlotPrefab;
 
+	[SerializeField] private Sprite m_testItemSprite;
+	[SerializeField] private GameObject m_testItemPrefab;
+
+	private void Start()
+	{
+		m_items = new List<Item>(m_inventorySize);
+		SetupItemSlots();
+
+
+		// add test item
+		Item testItem = new LimbItem() { m_sprite = m_testItemSprite, m_limbPrefab = m_testItemPrefab };
+		AddItem(testItem);
+	}
+
+	private void Update()
+	{
+
+	}
+
 	// possible states:
 	// item is currently held / held item is null
 	// slot being clicked contains items / slot is null
@@ -59,16 +78,30 @@ public class Inventory : MonoBehaviour
 			Instantiate(m_itemSlotPrefab, m_gridParent);
 	}
 
-
-    private void Start()
-    {
-		SetupItemSlots();
+	private void SetInventorySize(int newInventorySize)
+	{
+		int inventorySizeDifference = m_items.Capacity - newInventorySize; // owo
 	}
 
-	private void Update()
-    {
-        
-    }
+	// Returns true if item slot found, and false if not
+	public bool AddItem(Item item)
+	{
+		for (int i = 0; i < m_inventorySize; i++)
+		{
+			if (m_items[i] != null) continue;
+
+			SetItemSlot(i, item);
+			return true;
+		}
+		return false;
+	}
+
+	// Sets item slot, will overwrite 
+	public void SetItemSlot(int index, Item item)
+	{
+		m_items[index] = item;
+		m_gridParent.GetChild(index).GetComponent<Image>().sprite = item.m_sprite;
+	}
 
 	private void Awake()
 	{
