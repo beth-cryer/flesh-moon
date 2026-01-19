@@ -3,11 +3,10 @@ using UnityEngine.UI;
 
 public class ItemObject: MonoBehaviour
 {
-	protected Image m_image;
+	[SerializeField] protected Image m_image;
 
 	protected virtual void Start()
 	{
-		m_image = GetComponent<Image>();
 	}
 
 	public void UpdateItem(Item newItemHeld)

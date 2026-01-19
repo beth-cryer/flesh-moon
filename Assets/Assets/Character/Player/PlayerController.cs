@@ -1,24 +1,27 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Playables;
 
 public class PlayerController : CharacterBase
 {
 	private PlayerInput m_playerInput;
-	[SerializeField] private Camera m_camera;
+	[SerializeField] private Transform m_camera;
 
 	[SerializeField] protected float m_jumpCoyoteTime;
 	private float m_timeSinceGrounded = 0.0f;
 
+	[Header("Camera")]
+	[SerializeField] private float m_camera_xMaximum;
+	[SerializeField] private float m_camera_xMinimum;
+
 	protected override void Start()
 	{
 		base.Start();
-		m_playerInput = GetComponent<PlayerInput>();
+		m_playerInput = GameStateManager.m_instance.m_playerInput;
 	}
 
 	protected override void Update()
 	{
-
+		HandleCamera();
 	}
 
 	protected override void FixedUpdate()
@@ -81,6 +84,14 @@ public class PlayerController : CharacterBase
 	private bool CanJump()
 	{
 		return (m_characterController.isGrounded || m_timeSinceGrounded < m_jumpCoyoteTime) && m_jumpsRemaining > 0;
+	}
+
+	private void HandleCamera()
+	{
+		Vector2 lookInput = GetInputActionValue<Vector2>("Look");
+		float xRotation = Mathf.Clamp(lookInput.x, m_camera_xMinimum, m_camera_xMaximum);
+
+
 	}
 
 	public T GetInputActionValue<T>(string inputActionName) where T : struct

@@ -10,7 +10,7 @@ public class Inventory : MonoBehaviour
 
 	public UnityAction<Item> m_onItemHeld;
 
-	private List<Item> m_items;
+	public List<Item> m_items;
 	private Item m_heldItem = null;
 
 	[SerializeField] private int m_inventorySize = 20;
@@ -24,13 +24,15 @@ public class Inventory : MonoBehaviour
 
 	private void Start()
 	{
-		m_items = new List<Item>(m_inventorySize);
+		m_items = new List<Item>();
+		SetInventorySize(m_inventorySize);
 		SetupItemSlots();
 
-
 		// add test item
-		Item testItem = new LimbItem() { m_sprite = m_testItemSprite, m_limbPrefab = m_testItemPrefab };
+		Item testItem = new LimbItem() { m_name = "Test Limb", m_sprite = m_testItemSprite, m_limbPrefab = m_testItemPrefab };
 		AddItem(testItem);
+
+		m_onItemHeld.Invoke(null);
 	}
 
 	private void Update()
@@ -44,15 +46,18 @@ public class Inventory : MonoBehaviour
 	// if both are full, swap
 	public Item ClickItemSlot(int index)
 	{
+		Debug.Log("Clicked on inventory slot=" + index);
 		Item currentHeldItem = m_heldItem; // item buffer, holds current held item
 
 		// if slot was filled, pick up item previously in slot
+		Debug.Log("Clicked slot with item = " + m_items[index] == null ? "none" : m_items[index].m_name);
 		m_heldItem = m_items[index];
 		m_onItemHeld.Invoke(m_heldItem);
 
 		// if item held, place in slot
+		Debug.Log("Placed held item = " + currentHeldItem == null ? "none" : currentHeldItem.m_name);
 		m_items[index] = currentHeldItem;
-		m_gridParent.GetChild(index).GetComponent<Image>().sprite = currentHeldItem.m_sprite;
+		m_gridParent.GetChild(index).GetComponent<ItemObject>().UpdateItem(m_items[index]);
 
 		return m_heldItem;
 	}
@@ -62,7 +67,12 @@ public class Inventory : MonoBehaviour
 	{
 		int childCount = 0;
 		foreach(Transform child in m_gridParent)
+		{
+			Debug.Log(childCount);
+			//child.GetComponent<Button>().onClick.RemoveAllListeners();
+			//child.GetComponent<Button>().onClick.AddListener(() => ClickItemSlot(childCount));
 			childCount++;
+		}
 
 		if (childCount > m_inventorySize)
 		{
@@ -75,12 +85,31 @@ public class Inventory : MonoBehaviour
 
 		// ELSE fill missing slots
 		for (int i = childCount; i < m_inventorySize; i++)
-			Instantiate(m_itemSlotPrefab, m_gridParent);
+		{
+			Debug.Log(i);
+			GameObject newSlot = Instantiate(m_itemSlotPrefab, m_gridParent);
+			newSlot.GetComponent<Button>().onClick.AddListener(() => ClickItemSlot(i));
+			newSlot.GetComponent<ItemObject>().UpdateItem(null);
+		}
 	}
 
 	private void SetInventorySize(int newInventorySize)
 	{
-		int inventorySizeDifference = m_items.Capacity - newInventorySize; // owo
+		m_inventorySize = newInventorySize;
+		int inventorySizeDifference = m_items.Count - m_inventorySize; // owo
+
+		// add empty slots to list equal to difference
+		for (int i = inventorySizeDifference; i < 0; i++)
+		{
+			m_items.Add(null);
+		}
+
+		// remove slots from list equal to difference
+		for (int i = inventorySizeDifference; i > 0; i--)
+		{
+			m_items.RemoveAt(m_items.Count - 1);
+		}
+
 	}
 
 	// Returns true if item slot found, and false if not
@@ -99,8 +128,9 @@ public class Inventory : MonoBehaviour
 	// Sets item slot, will overwrite 
 	public void SetItemSlot(int index, Item item)
 	{
+		Debug.Log("Set item at index=" + index);
 		m_items[index] = item;
-		m_gridParent.GetChild(index).GetComponent<Image>().sprite = item.m_sprite;
+		m_gridParent.GetChild(index).GetComponent<ItemObject>().UpdateItem(item);
 	}
 
 	private void Awake()

@@ -17,10 +17,10 @@ public class Ritual: MonoBehaviour
 
 	private void Start()
 	{
-		m_playerInput = GetComponent<PlayerInput>();
+		m_playerInput = GameStateManager.m_instance.m_playerInput;
 		m_canvasScale = m_canvas.scaleFactor;
 
-		m_playerInput.currentActionMap.FindAction("Click").performed += OnClick;
+		m_playerInput.actions.FindAction("Click").performed += OnClick;
 	}
 
 	private void Update()
