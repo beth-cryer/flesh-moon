@@ -7,6 +7,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Castle
+    second: {fileID: 2100000, guid: 7b7493f113e867a4786e29cee4fd5899, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Grass
     second: {fileID: 2100000, guid: 7854b9574d26f9c4eabc7a44369e06e8, type: 2}
   - first:
