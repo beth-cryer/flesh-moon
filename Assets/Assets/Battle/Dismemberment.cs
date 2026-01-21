@@ -7,8 +7,8 @@ public class Dismemberment : MonoBehaviour
 
     void Start()
     {
-        
-    }
+		SetRagdollActive(false);
+	}
 
     private void Update()
     {
@@ -20,4 +20,17 @@ public class Dismemberment : MonoBehaviour
 			spawnedLimb.transform.position = m_testDismembermentBone.position;
 		}
     }
+
+	private void SetRagdollActive(bool isActive)
+	{
+		foreach (Rigidbody rb in transform.GetComponentsInChildren<Rigidbody>())
+		{
+			rb.isKinematic = !isActive;
+		}
+	}
+
+	private void SetRagdollPartActive(bool isActive, string boneName)
+	{
+
+	}
 }

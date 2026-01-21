@@ -12,8 +12,6 @@ public class GameStateManager : MonoBehaviour
 	private void Start()
 	{
 		EnterState(m_defaultState);
-
-		Cursor.lockState = CursorLockMode.Locked;
 	}
 
 	public void EnterState(GameState newState)
@@ -21,6 +19,7 @@ public class GameStateManager : MonoBehaviour
 		m_state = newState;
 
 		Cursor.visible = m_state.isMouseVisible;
+		Cursor.lockState = m_state.isMouseVisible ? CursorLockMode.Confined : CursorLockMode.Locked;
 		Time.timeScale = m_state.isGamePaused ? 0.0f : 1.0f;
 
 		string actionMap = m_state.inputActionMap switch
