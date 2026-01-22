@@ -44,15 +44,12 @@ public class CharacterBase : MonoBehaviour
 	[SerializeField] protected float m_jump_deceleration;
 	[SerializeField] protected int m_numJumps = 1;
 
-	//
-	protected float m_jumpsRemaining = 1;
+	protected CharacterData m_characterData;
 
 	protected virtual void Start()
 	{
 		m_characterController = GetComponent<CharacterController>();
 		m_characterModel = GetComponentInChildren<CharacterModel>();
-
-		m_jumpsRemaining = m_numJumps;
 
 		m_current_acceleration = m_acceleration;
 		m_current_deceleration = m_deceleration;
@@ -113,5 +110,10 @@ public class CharacterBase : MonoBehaviour
 			m_jumpHeight = Mathf.MoveTowards(m_jumpHeight, m_maxJumpHeight, jumpForceApplied); // Track height gained during jump
 
 		m_jumpMomentum = Vector3.MoveTowards(m_jumpMomentum, Vector3.up * targetForce, acceleration);
+	}
+
+	protected void ApplyLimbStats()
+	{
+		
 	}
 }
