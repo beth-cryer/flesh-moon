@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class HeldItem : ItemObject
+public class HeldItem : ItemUI
 {
 	private RectTransform m_rect;
 	private Canvas m_canvas;

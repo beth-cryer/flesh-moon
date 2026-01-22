@@ -21,11 +21,17 @@ public class PlayerController : CharacterBase
 
 	protected override void Update()
 	{
+		if (GameStateManager.m_instance.GetStateName() != "GameState_Default")
+			return;
+
 		HandleCamera();
 	}
 
 	protected override void FixedUpdate()
 	{
+		if (GameStateManager.m_instance.GetStateName() != "GameState_Default")
+			return;
+
 		if (!m_characterController.isGrounded)
 			m_timeSinceGrounded += Time.fixedDeltaTime;
 

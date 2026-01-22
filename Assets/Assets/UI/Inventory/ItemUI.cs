@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ItemObject: MonoBehaviour
+public class ItemUI: MonoBehaviour
 {
 	[SerializeField] protected Image m_image;
 
@@ -11,7 +11,7 @@ public class ItemObject: MonoBehaviour
 
 	public void UpdateItem(Item newItemHeld)
 	{
-		if (newItemHeld == null)
+		if (newItemHeld == null || !newItemHeld.m_isItemInSlot)
 		{
 			m_image.color = new Color(0, 0, 0, 0);
 			return;

@@ -32,6 +32,11 @@ public class GameStateManager : MonoBehaviour
 		m_playerInput.SwitchCurrentActionMap(actionMap);
 	}
 
+	public string GetStateName()
+	{
+		return m_state.name;
+	}
+
 	private void Awake()
 	{
 		if (m_instance == null)

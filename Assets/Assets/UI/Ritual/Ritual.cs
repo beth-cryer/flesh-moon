@@ -34,7 +34,8 @@ public class Ritual: MonoBehaviour
 	// set limb to mouse position
 	private void PositionLimb()
 	{
-		m_heldLimb.position = GetMousePositionInWorld();
+		Vector2 mousePos = Mouse.current.position.ReadValue();
+		m_heldLimb.position = GetMousePositionInWorld(mousePos);
 	}
 
 	// rotate limb to face away from body center, and -1 xscale if to the left of center
@@ -52,13 +53,11 @@ public class Ritual: MonoBehaviour
 		m_heldLimb.localScale = new(xScale, 1f, 1f);
 	}
 
-	private Vector3 GetMousePositionInWorld()
+	private Vector3 GetMousePositionInWorld(Vector2 mousePos)
 	{
-		Vector2 mousePos = Mouse.current.position.ReadValue();
-
 		// need to convert from mouse pos to canvas pos, then get relative distance from bottom-left of the RenderTexture image
 		Vector2 mousePosRelativeToWindow = (mousePos - new Vector2(m_ritualWindowPos.position.x, m_ritualWindowPos.position.y)) / m_canvasScale;
-		Vector3 mousePos3d = new Vector3(mousePosRelativeToWindow.x, mousePosRelativeToWindow.y, m_characterModelOrigin.localPosition.z);
+		Vector3 mousePos3d = new Vector3(mousePosRelativeToWindow.x, mousePosRelativeToWindow.y, m_characterModelOrigin.localPosition.z - 1.0f);
 
 		Vector3 worldPos = m_characterCamera.ScreenToWorldPoint(mousePos3d);
 		return worldPos;
@@ -68,7 +67,20 @@ public class Ritual: MonoBehaviour
 	{
 		Debug.Log("click function started");
 
-		Vector3 mouseWorldPos = GetMousePositionInWorld();
+		Vector2 mousePos = Mouse.current.position.ReadValue();
+		Vector2 ritualPos = m_ritualWindowPos.transform.position;
+		float ritualWidth = m_ritualWindowPos.rect.width;
+		float ritualHeight = m_ritualWindowPos.rect.height;
+
+		Debug.Log("ritual width = " + ritualWidth + ", height = " + ritualHeight);
+
+		if (mousePos.x > ritualPos.x && mousePos.y > ritualPos.y
+		&& mousePos.x < (ritualPos.x + ritualWidth) && mousePos.y < (ritualPos.y + ritualHeight))
+			return;
+
+		Debug.Log("clicked inside ritual window");
+
+		Vector3 mouseWorldPos = GetMousePositionInWorld(mousePos);
 		Vector3 camPos = m_characterCamera.transform.position;
 
 		RaycastHit hit;
@@ -78,8 +90,7 @@ public class Ritual: MonoBehaviour
 		// pick up limb
 		if (m_heldLimb == null)
 		{
-			if (didHit)
-				m_heldLimb = hit.transform;
+			if (didHit) m_heldLimb = hit.transform;
 			return;
 		}
 
